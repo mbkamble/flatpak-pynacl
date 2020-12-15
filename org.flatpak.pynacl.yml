@@ -1,0 +1,28 @@
+---
+app-id: org.flatpak.pynacl
+runtime: org.kde.Platform
+runtime-version: '5.15'
+sdk: org.kde.Sdk
+command: pynacl_test.py
+finish-args:
+  - "--share=ipc"
+  - "--socket=x11"
+  - "--socket=wayland"
+  - "--socket=pulseaudio"
+  - "--share=network"
+  - "--filesystem=xdg-download"
+  - "--filesystem=xdg-run/app"
+  - "--filesystem=xdg-run/gnupg"
+  - "--device=dri"
+  - "--env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess"
+  - "--env=SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh"
+modules:
+  - pydeps-requirements.json
+  - name: qutebrowser
+    buildsystem: simple
+    build-commands:
+      - mkdir ${FLATPAK_DEST}/bin
+      - install -D pynacl_test.py ${FLATPAK_DEST}/bin/
+    sources:
+      - type: file
+        path: pynacl_test.py
