@@ -1,0 +1,4 @@
+-- flatpak-pynacl
+Experiments and flatpak learnings to build pynacl package in flatpak
+
+As I am going through the flatpak learning curve to understand its underlying concepts, building different applications and libraries, I am documenting the process through individual small build cases. PyNaCl python module is one of those cases.
