@@ -1,0 +1,30 @@
+* Pynacl module
+- needs libsodium for key functionality. In traditional python style,
+  it uses C-Python interface via bindings. The term used is ~CFFI~
+  (C-style foreign function interface).
+- Ultimately the build system needs to generate nacl/_sodium.abi3.so
+  shared library which will provide the method access to ~lib~ and
+  ~ffi~ such as ~from nacl._sodium import ffi, lib~
+- Since we are using ~no-build-isolation~ flag during the build, we
+  need to explicitly build ~cffi~ first and then ~pynacl~ so that
+  pynacl build sees and uses cffi functionality used in its build
+  specification (~setup.py~). The no-build-isolation is used because
+  we want to use the python infrastructure available in the SDK, such
+  as pip, setup, distutils and wheels.
+- When setuptools does not have cffi, it prints warning message during
+  build indicating that ~cffi_modules~ is an unrecognized parameter in
+  ~setup()~ invocation. Consequently the libsodium is compiled but
+  never linked into the pynacl bindings. Then when we run code that
+  contains ~import nacl.utils~, it throws an error stating
+  "ModuleNotFoundError: No module named 'nacl._sodium'"
+- Without no-build-isolation, just running
+  ~pip install --prefix=/app pynacl~ would track the dependency and
+  install cffi first.
+
+* pip build system
+- In setup.py they use cffi_modules. Each element specifies a path to
+  a file (in this case ~src/bindings/build.py~ and an object (in this
+  case ~ffi~) in that file that is executed during the build process)
+- In the ~build.py~ they use ~ffi.set_source~ to specify what library
+  file will be generated (in this case ~_sodium~). Read the CFFI
+  documentation for a more through understanding.
