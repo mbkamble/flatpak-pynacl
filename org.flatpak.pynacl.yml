@@ -16,6 +16,9 @@ finish-args:
   - "--device=dri"
   - "--env=QTWEBENGINEPROCESS_PATH=/app/bin/QtWebEngineProcess"
   - "--env=SSH_AUTH_SOCK=/run/user/1000/gnupg/S.gpg-agent.ssh"
+build-options:
+  build-args:
+    - "--share=network"
 modules:
   - pydeps-requirements.json
   - name: qutebrowser
